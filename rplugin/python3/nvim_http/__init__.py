@@ -63,6 +63,7 @@ class HttpRunner:
             -t / --tab: Display the response in a new tab
             -T / --timeout: Set the timeout for the HTTP request, in seconds (default: 10)
             --no-redirects: Disable following redirects
+            --buffer-name: Use an own buffer name for the response buffer, useful when using a symlink on /tmp (on MacOS by default)
 
         """
         opts = HttpRequestOptions(*args)
@@ -109,6 +110,7 @@ class HttpRunner:
             "--tab",
             "--timeout",
             "--no-redirects",
+            "--buffer-name",
         }
 
         if "-v" in args or "--vertical" in args:
@@ -129,6 +131,9 @@ class HttpRunner:
 
         if "--no-redirects" in args:
             opts.remove("--no-redirects")
+
+        if "--buffer-name" in args:
+            opts.remove("--buffer-name")
 
         if args and (args[-1] == "-T" or args[-1] == "--timeout"):
             # Return a dummy value to indicate that the next argument should be

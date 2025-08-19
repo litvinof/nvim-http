@@ -29,12 +29,14 @@ class HttpRequestOptions:
     """
 
     _default_timeout = 10
+    _default_buffer_name= "/private/tmp/response.http" if __import__("platform").system() == "Darwin" else "/tmp/response.http"
 
     def __init__(self, *args: str):
         self.response_buffer_mode = ResponseBufferMode.from_args(*args)
         self.timeout = self._timeout_from_args(*args)
         self.disable_redirects = "--no-redirects" in args
-
+        self.buffer_name = self._buffer_name_from_args(*args)
+ 
     @classmethod
     def _timeout_from_args(cls, *args: str) -> Optional[float]:
         """
@@ -45,3 +47,14 @@ class HttpRequestOptions:
                 return float(args[i + 1])
 
         return cls._default_timeout
+
+    @classmethod
+    def _buffer_name_from_args(cls, *args: str) -> str:
+        """
+        Get the buffer name from the given arguments.
+        """
+        for i, arg in enumerate(args):
+            if arg == "--buffer-name" and i + 1 < len(args):
+                return args[i + 1]
+
+        return cls._default_buffer_name

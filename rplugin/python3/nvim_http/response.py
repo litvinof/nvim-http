@@ -5,10 +5,8 @@ from pynvim import Nvim
 
 from .opts import HttpRequestOptions
 
-response_bufname = "/tmp/response.http"
 
-
-def get_http_response_buf(nvim: Nvim):
+def get_http_response_buf(nvim: Nvim, response_bufname: str):
     """
     Get the buffer object of the HTTP response.
     """
@@ -24,11 +22,12 @@ def show_http_response(response, nvim: Nvim, opts: HttpRequestOptions):
     :param vertical: Whether to display the response in a vertical or horizontal
         buffer.
     """
-    buf = get_http_response_buf(nvim)
+    response_bufname = opts.buffer_name
+    buf = get_http_response_buf(nvim, response_bufname)
     cmd = opts.response_buffer_mode.value
     if not buf:
         nvim.command(f"{cmd} {response_bufname}")
-        buf = get_http_response_buf(nvim)
+        buf = get_http_response_buf(nvim, response_bufname)
         assert buf, "Could not find response buffer"
 
     try:
